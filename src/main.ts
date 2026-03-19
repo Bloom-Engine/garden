@@ -267,7 +267,7 @@ while (!windowShouldClose()) {
     drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
-    // === PLAYER — textured character ===
+    // === PLAYER — static textured ninja ===
     drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
