@@ -11,3 +11,6 @@ provisioning_profile = "/Users/amlug/.perry/com_bloomengine_garden.mobileprovisi
 [project]
 entry = "src/main.ts"
 name = "bloom-garden"
+bundle_id = "com.bloomengine.garden"
+icons = { source = "assets/icon.png" }
+features = ["ios-game-loop"]

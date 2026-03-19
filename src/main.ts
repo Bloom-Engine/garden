@@ -315,7 +315,7 @@ while (!windowShouldClose()) {
 
     // === PLAYER — static textured ninja ===
     updateModelAnimation(animWalk, 0.0, t);
-    drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
+    drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 0.005, W);
 
     // === COLLECTIBLE BLOOMS ===
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
