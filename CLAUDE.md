@@ -76,6 +76,22 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell am start -n com.bloomengine.garden/.BloomActivity
 ```
 
+### Windows
+```bash
+# Must be run on Windows (or with MSVC cross-compilation sysroot via xwin)
+perry compile --target windows src/main.ts -o BloomGarden
+# Copy assets/ alongside the .exe
+./BloomGarden.exe
+```
+
+### Linux
+```bash
+# Must be run on Linux (or with Linux cross-compilation sysroot)
+perry compile --target linux src/main.ts -o bloom_garden
+# Copy assets/ alongside the binary
+./bloom_garden
+```
+
 ### Rebuilding Perry runtime for iOS targets
 ```bash
 cd /path/to/perry
@@ -95,6 +111,13 @@ cargo build --release -p perry-runtime --target aarch64-linux-android
 mkdir -p target/aarch64-linux-android/release
 ln -sf /path/to/perry/target/aarch64-linux-android/release/libperry_runtime.a \
        target/aarch64-linux-android/release/libperry_runtime.a
+```
+
+### Rebuilding Perry runtime for Windows/Linux
+```bash
+cd /path/to/perry
+cargo build --release -p perry-runtime --target x86_64-pc-windows-msvc   # Windows
+cargo build --release -p perry-runtime --target x86_64-unknown-linux-gnu # Linux
 ```
 
 ## Perry Compiler Pitfalls
