@@ -267,9 +267,8 @@ while (!windowShouldClose()) {
     drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
-    // === PLAYER — textured Mixamo character ===
+    // === PLAYER — textured character ===
     drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
-    // Joint animation is driven from engine begin_frame (debug test)
 
     // === COLLECTIBLE BLOOMS ===
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
