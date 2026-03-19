@@ -8,6 +8,7 @@ import {
   getMouseDeltaX, getMouseDeltaY,
   getScreenWidth, getScreenHeight,
   vec3, Key,
+  loadModel, drawModel,
 } from 'bloom';
 
 // ST[0]=state, ST[1]=sinYaw, ST[2]=cosYaw, ST[3]=winTimer, ST[4]=pitch
@@ -29,6 +30,22 @@ const PRVY: number[] = []; const PRL: number[] = []; const PRC: number[] = [];
 
 initWindow(800, 600, 'Bloom Garden');
 setTargetFPS(60);
+
+// Load 3D models (Kenney CC0 assets)
+const mdlTreeOak = loadModel('assets/models/tree_oak.glb');
+const mdlTreeFat = loadModel('assets/models/tree_fat.glb');
+const mdlTreeDetail = loadModel('assets/models/tree_detailed.glb');
+const mdlTreeDefault = loadModel('assets/models/tree_default.glb');
+const mdlRocks = loadModel('assets/models/rocks.glb');
+const mdlStones = loadModel('assets/models/stones.glb');
+const mdlFlowerRed = loadModel('assets/models/flower_redA.glb');
+const mdlFlowerYellow = loadModel('assets/models/flower_yellowA.glb');
+const mdlFlowerPurple = loadModel('assets/models/flower_purpleA.glb');
+const mdlBush = loadModel('assets/models/plant_bush.glb');
+const mdlBushLarge = loadModel('assets/models/plant_bushLarge.glb');
+const mdlMushroom = loadModel('assets/models/mushroom_red.glb');
+const mdlBarrel = loadModel('assets/models/barrel.glb');
+const mdlColumn = loadModel('assets/models/column.glb');
 
 while (!windowShouldClose()) {
   beginDrawing();
@@ -73,23 +90,19 @@ while (!windowShouldClose()) {
     // Slow orbit
     const ts = Math.sin(t * 0.15); const tc = Math.cos(t * 0.15);
     beginMode3D({ position: vec3(22.0 * ts, 10.0, 22.0 * tc), target: vec3(0, 1, 0), up: vec3(0, 1, 0), fovy: 45.0, projection: 0.0 });
-    // World
+    // World (models)
     drawCube(vec3(0, -0.5, 0), 60.0, 1.0, 60.0, { r: 75, g: 155, b: 55, a: 255 });
-    drawCube(vec3(0, -0.48, 0), 28.0, 1.0, 28.0, { r: 85, g: 165, b: 62, a: 255 });
-    drawCylinder(vec3(10, 0, 12), 0.12, 0.2, 2.5, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(10, 2.3, 12), 1.4, { r: 50, g: 140, b: 45, a: 255 });
-    drawSphere(vec3(10.4, 2.7, 11.7), 1.0, { r: 65, g: 155, b: 55, a: 255 });
-    drawCylinder(vec3(13, 0, 10), 0.12, 0.2, 3.0, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(13, 2.8, 10), 1.2, { r: 55, g: 145, b: 50, a: 255 });
-    drawSphere(vec3(-12, 0.6, -10), 1.2, { r: 155, g: 150, b: 140, a: 255 });
-    drawSphere(vec3(-10, 0.8, -14), 1.5, { r: 150, g: 145, b: 135, a: 255 });
-    drawCylinder(vec3(10.5, 0, -12), 0.45, 0.55, 4.5, { r: 158, g: 153, b: 143, a: 255 });
-    drawCylinder(vec3(13.5, 0, -12), 0.45, 0.55, 4.5, { r: 158, g: 153, b: 143, a: 255 });
-    drawCylinder(vec3(12, 4.2, -12), 2.0, 2.0, 0.5, { r: 165, g: 160, b: 150, a: 255 });
-    drawSphere(vec3(12, 4.9, -12), 0.5, { r: 170, g: 165, b: 155, a: 255 });
+    drawModel(mdlTreeOak, vec3(10, 0, 12), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDetail, vec3(13, 0, 10), 2.2, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlRocks, vec3(-12, 0, -10), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlStones, vec3(-10, 0, -14), 2.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlColumn, vec3(10.5, 0, -12), 3.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlColumn, vec3(13.5, 0, -12), 3.0, { r: 255, g: 255, b: 255, a: 255 });
     drawCylinder(vec3(0, 0, 0), 2.0, 2.3, 0.25, { r: 135, g: 130, b: 120, a: 255 });
     drawCylinder(vec3(0, 0.25, 0), 0.35, 0.5, 0.9, { r: 155, g: 150, b: 140, a: 255 });
     drawCube(vec3(-10, 0.15, 10), 14.0, 0.08, 14.0, { r: 65, g: 155, b: 170, a: 170 });
+    drawModel(mdlBush, vec3(3, 0, -2), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlFlowerRed, vec3(6, 0, 2), 1.5, { r: 255, g: 255, b: 255, a: 255 });
     // Blooms preview
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
       const j = Math.floor(i);
@@ -156,35 +169,28 @@ while (!windowShouldClose()) {
     // === WORLD ===
     drawCube(vec3(0, -0.5, 0), 60.0, 1.0, 60.0, { r: 75, g: 155, b: 55, a: 255 });
     drawCube(vec3(0, -0.48, 0), 28.0, 1.0, 28.0, { r: 85, g: 165, b: 62, a: 255 });
-    // Grove (SE) — 6 trees
-    drawCylinder(vec3(10, 0, 12), 0.12, 0.2, 2.5, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(10, 2.3, 12), 1.4, { r: 50, g: 140, b: 45, a: 255 });
-    drawSphere(vec3(10.4, 2.7, 11.7), 1.0, { r: 65, g: 155, b: 55, a: 255 });
-    drawCylinder(vec3(13, 0, 10), 0.12, 0.2, 3.0, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(13, 2.8, 10), 1.2, { r: 55, g: 145, b: 50, a: 255 });
-    drawSphere(vec3(12.6, 3.1, 10.3), 0.85, { r: 40, g: 128, b: 45, a: 255 });
-    drawCylinder(vec3(8, 0, 15), 0.12, 0.18, 2.2, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(8, 2.0, 15), 1.1, { r: 48, g: 138, b: 48, a: 255 });
-    drawCylinder(vec3(15, 0, 13), 0.12, 0.18, 2.8, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(15, 2.5, 13), 1.2, { r: 58, g: 148, b: 52, a: 255 });
-    drawCylinder(vec3(11, 0, 16), 0.1, 0.16, 2.0, { r: 100, g: 70, b: 40, a: 255 });
-    drawSphere(vec3(11, 1.8, 16), 1.0, { r: 52, g: 142, b: 50, a: 255 });
-    drawCylinder(vec3(14, 0, 15), 0.1, 0.15, 1.8, { r: 95, g: 68, b: 38, a: 255 });
-    drawSphere(vec3(14, 1.6, 15), 0.9, { r: 55, g: 138, b: 46, a: 255 });
-    // Rocks (NW) — 7 rocks
-    drawSphere(vec3(-12, 0.7, -10), 1.3, { r: 155, g: 150, b: 140, a: 255 });
-    drawSphere(vec3(-10, 0.9, -14), 1.6, { r: 148, g: 143, b: 133, a: 255 });
-    drawSphere(vec3(-15, 0.45, -12), 0.9, { r: 160, g: 155, b: 145, a: 255 });
-    drawSphere(vec3(-14, 0.4, -8), 0.75, { r: 145, g: 140, b: 130, a: 255 });
-    drawSphere(vec3(-11, 0.55, -13), 1.1, { r: 152, g: 147, b: 137, a: 255 });
-    drawSphere(vec3(-13, 0.25, -11), 0.5, { r: 140, g: 135, b: 128, a: 255 });
-    drawSphere(vec3(-9, 0.2, -15), 0.4, { r: 150, g: 145, b: 138, a: 255 });
-    // Arch (NE)
-    drawCylinder(vec3(10.5, 0, -12), 0.5, 0.6, 4.5, { r: 158, g: 153, b: 143, a: 255 });
-    drawCylinder(vec3(13.5, 0, -12), 0.5, 0.6, 4.5, { r: 158, g: 153, b: 143, a: 255 });
+    // Grove (SE) — trees (loaded models)
+    drawModel(mdlTreeOak, vec3(10, 0, 12), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDetail, vec3(13, 0, 10), 2.2, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeFat, vec3(8, 0, 15), 1.8, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDefault, vec3(15, 0, 13), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeOak, vec3(11, 0, 16), 1.6, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDetail, vec3(14, 0, 15), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    // Scattered trees elsewhere
+    drawModel(mdlTreeFat, vec3(-8, 0, -5), 1.8, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDefault, vec3(5, 0, -15), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeOak, vec3(-15, 0, 5), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    // Rocks (NW) — loaded models
+    drawModel(mdlRocks, vec3(-12, 0, -10), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlStones, vec3(-10, 0, -14), 2.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlRocks, vec3(-15, 0, -12), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlStones, vec3(-14, 0, -8), 1.2, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlRocks, vec3(-11, 0, -13), 1.8, { r: 255, g: 255, b: 255, a: 255 });
+    // Arch (NE) — columns
+    drawModel(mdlColumn, vec3(10.5, 0, -12), 3.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlColumn, vec3(13.5, 0, -12), 3.0, { r: 255, g: 255, b: 255, a: 255 });
     drawCylinder(vec3(12, 4.2, -12), 2.2, 2.2, 0.5, { r: 165, g: 160, b: 150, a: 255 });
-    drawSphere(vec3(12, 4.9, -12), 0.55, { r: 170, g: 165, b: 155, a: 255 });
-    // Pedestal
+    // Pedestal — keep as primitives (looks good)
     drawCylinder(vec3(0, 0, 0), 2.0, 2.3, 0.25, { r: 135, g: 130, b: 120, a: 255 });
     drawCylinder(vec3(0, 0.25, 0), 0.4, 0.55, 0.9, { r: 152, g: 147, b: 137, a: 255 });
     drawCylinder(vec3(0, 1.15, 0), 0.7, 0.7, 0.08, { r: 165, g: 160, b: 150, a: 255 });
@@ -205,23 +211,25 @@ while (!windowShouldClose()) {
     // Water (SW)
     const wy = 0.12 + Math.sin(t * 0.8) * 0.08;
     drawCube(vec3(-10, wy, 10), 14.0, 0.08, 14.0, { r: 60, g: 150, b: 168, a: 165 });
-    // Pond rocks
-    drawSphere(vec3(-4, 0.2, 4), 0.6, { r: 140, g: 135, b: 128, a: 255 });
-    drawSphere(vec3(-16, 0.25, 16), 0.5, { r: 145, g: 140, b: 132, a: 255 });
-    // Bushes
-    drawSphere(vec3(3, 0.3, -2), 0.5, { r: 58, g: 128, b: 44, a: 255 });
-    drawSphere(vec3(-2, 0.25, 3), 0.4, { r: 55, g: 125, b: 42, a: 255 });
-    drawSphere(vec3(4, 0.2, 5), 0.35, { r: 62, g: 132, b: 46, a: 255 });
-    drawSphere(vec3(-6, 0.2, -3), 0.3, { r: 50, g: 120, b: 40, a: 255 });
-    // Compass pillars
-    drawCylinder(vec3(25, 0, 0), 0.15, 0.15, 2.5, { r: 200, g: 60, b: 60, a: 255 });
-    drawSphere(vec3(25, 2.7, 0), 0.25, { r: 220, g: 80, b: 80, a: 255 });
-    drawCylinder(vec3(-25, 0, 0), 0.15, 0.15, 2.5, { r: 60, g: 60, b: 200, a: 255 });
-    drawSphere(vec3(-25, 2.7, 0), 0.25, { r: 80, g: 80, b: 220, a: 255 });
-    drawCylinder(vec3(0, 0, 25), 0.15, 0.15, 2.5, { r: 200, g: 200, b: 60, a: 255 });
-    drawSphere(vec3(0, 2.7, 25), 0.25, { r: 220, g: 220, b: 80, a: 255 });
-    drawCylinder(vec3(0, 0, -25), 0.15, 0.15, 2.5, { r: 60, g: 200, b: 60, a: 255 });
-    drawSphere(vec3(0, 2.7, -25), 0.25, { r: 80, g: 220, b: 80, a: 255 });
+    // Pond decorations
+    drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlStones, vec3(-16, 0, 16), 0.8, { r: 255, g: 255, b: 255, a: 255 });
+    // Bushes — loaded models
+    drawModel(mdlBush, vec3(3, 0, -2), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlBushLarge, vec3(-2, 0, 3), 1.2, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlBush, vec3(4, 0, 5), 1.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlBushLarge, vec3(-6, 0, -3), 0.8, { r: 255, g: 255, b: 255, a: 255 });
+    // Ground flowers
+    drawModel(mdlFlowerRed, vec3(6, 0, 2), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlFlowerYellow, vec3(-4, 0, -5), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlFlowerPurple, vec3(8, 0, -3), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlFlowerRed, vec3(-7, 0, 7), 1.2, { r: 255, g: 255, b: 255, a: 255 });
+    // Mushrooms
+    drawModel(mdlMushroom, vec3(7, 0, 14), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlMushroom, vec3(-13, 0, -9), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    // Barrels near arch
+    drawModel(mdlBarrel, vec3(11, 0, -10), 1.5, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlBarrel, vec3(14, 0, -10), 1.5, { r: 255, g: 255, b: 255, a: 255 });
 
     // === PLAYER ===
     const bob = P[4] > 0.5 && hs > 0.5 ? Math.sin(P[5] * 8.0) * 0.06 : Math.sin(t * 2.0) * 0.03;
@@ -317,6 +325,9 @@ while (!windowShouldClose()) {
     const ws = Math.sin(ST[3] * 0.25); const wc = Math.cos(ST[3] * 0.25);
     beginMode3D({ position: vec3(16.0 * ws, 8.0, 16.0 * wc), target: vec3(0, 1, 0), up: vec3(0, 1, 0), fovy: 45.0, projection: 0.0 });
     drawCube(vec3(0, -0.5, 0), 60.0, 1.0, 60.0, { r: 75, g: 155, b: 55, a: 255 });
+    drawModel(mdlTreeOak, vec3(10, 0, 12), 2.0, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlTreeDetail, vec3(13, 0, 10), 2.2, { r: 255, g: 255, b: 255, a: 255 });
+    drawModel(mdlRocks, vec3(-12, 0, -10), 2.0, { r: 255, g: 255, b: 255, a: 255 });
     drawCylinder(vec3(0, 0, 0), 2.0, 2.3, 0.25, { r: 135, g: 130, b: 120, a: 255 });
     drawCylinder(vec3(0, 0.25, 0), 0.4, 0.55, 0.9, { r: 152, g: 147, b: 137, a: 255 });
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
