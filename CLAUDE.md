@@ -59,6 +59,23 @@ xcrun devicectl device install app --device <UDID> BloomGarden.app
 xcrun devicectl device process launch --device <UDID> com.bloomengine.garden
 ```
 
+### Android
+```bash
+# Quick build + install + run:
+./build-android.sh --run
+
+# Or manual steps:
+NDK_BIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin \
+ANDROID_NDK_HOME=~/Library/Android/sdk/ndk/28.0.12433566 \
+CC_aarch64_linux_android=$NDK_BIN/aarch64-linux-android24-clang \
+CXX_aarch64_linux_android=$NDK_BIN/aarch64-linux-android24-clang++ \
+perry compile --target android src/main.ts -o bloom_garden
+cp bloom_garden android/app/src/main/jniLibs/arm64-v8a/libbloom_garden.so
+cd android && ./gradlew assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb shell am start -n com.bloomengine.garden/.BloomActivity
+```
+
 ### Rebuilding Perry runtime for iOS targets
 ```bash
 cd /path/to/perry
@@ -68,6 +85,16 @@ cargo build --release -p perry-runtime --target aarch64-apple-ios      # Device
 mkdir -p target/aarch64-apple-ios-sim/release
 ln -sf /path/to/perry/target/aarch64-apple-ios-sim/release/libperry_runtime.a \
        target/aarch64-apple-ios-sim/release/libperry_runtime.a
+```
+
+### Rebuilding Perry runtime for Android
+```bash
+cd /path/to/perry
+cargo build --release -p perry-runtime --target aarch64-linux-android
+# Symlink into garden project:
+mkdir -p target/aarch64-linux-android/release
+ln -sf /path/to/perry/target/aarch64-linux-android/release/libperry_runtime.a \
+       target/aarch64-linux-android/release/libperry_runtime.a
 ```
 
 ## Perry Compiler Pitfalls
@@ -123,6 +150,17 @@ These were missing from the iOS lib and had to be added to match the macOS imple
 ### Code Signing for Device
 
 Development profile (wildcard `K6UW5YV9F7.*`) from Xcode, signed with `Apple Development` identity. Entitlements need `application-identifier`, `com.apple.developer.team-identifier`, `get-task-allow: true`, and `keychain-access-groups`.
+
+## Android Port Architecture
+
+- **Rendering**: SurfaceView + Vulkan via wgpu
+- **JNI bridge**: `BloomGameBridge.kt` calls bloom-android JNI functions (`JNI_OnLoad`, `nativeSetSurface`, `nativeMain`, `nativeOnTouch`, `nativeOnDestroy`)
+- **Asset path**: `BLOOM_ASSET_PATH` env var set before `loadLibrary`; assets extracted from APK to `filesDir`
+- **Touch events**: `BloomActivity.onTouchEvent` -> `BloomGameBridge.nativeOnTouch` -> `bloom_android_on_touch`
+- **Game thread**: Spawned from `surfaceCreated` callback, runs the compiled `main()`
+- **MTE disabled**: In `JNI_OnLoad` for Perry NaN-boxing compatibility
+- **Perry output**: Compiles to `.so` (shared library), placed in `jniLibs/arm64-v8a/`
+- **No `android-game-loop` feature needed** (unlike iOS) — the Activity spawns the game thread directly
 
 ## Game Architecture
 
