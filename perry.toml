@@ -1,0 +1,7 @@
+[project]
+name = "bloom-garden"
+entry = "src/main.ts"
+
+[build]
+out_dir = "dist"
+opt_level = 2
