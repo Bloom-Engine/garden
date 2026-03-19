@@ -8,7 +8,7 @@ import {
   getMouseDeltaX, getMouseDeltaY,
   getScreenWidth, getScreenHeight,
   vec3, Key,
-  loadModel, drawModel,
+  loadModel, drawModel, loadModelAnimation, updateModelAnimation,
 } from 'bloom';
 
 // === STATE (all arrays for Perry safety) ===
@@ -265,7 +265,7 @@ while (!windowShouldClose()) {
     drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
-    // === PLAYER — textured Mixamo character ===
+    // === PLAYER — textured Mixamo character (static for now) ===
     drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
