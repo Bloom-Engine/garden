@@ -7,9 +7,19 @@ import {
   isKeyDown, isKeyPressed, isAnyInputPressed,
   getMouseDeltaX, getMouseDeltaY,
   getScreenWidth, getScreenHeight,
+  getTouchX, getTouchY, getTouchCount, isMobile,
   vec3, Key,
   loadModel, drawModel, loadModelAnimation, updateModelAnimation, setJointTest,
 } from 'bloom';
+
+// Touch controls — only active on mobile platforms (iOS/Android)
+const MOBILE = isMobile();
+const TCH = [0.0, 0.0, 0.0, 0.0]; // [cameraLastX, cameraLastY, cameraActive, showControls]
+TCH[3] = MOBILE ? 1.0 : 0.0; // Show touch controls by default on mobile
+const TOUCH_JOY_RADIUS = 60.0;
+const TOUCH_JOY_X = 100.0;
+const TOUCH_JOY_Y_OFF = 160.0; // from bottom
+const TOUCH_CAM_SENS = 0.005;
 
 // === STATE (all arrays for Perry safety) ===
 // ST: [state, sinYaw, cosYaw, winTimer, pitch, collectFlash, moveSpeed]
@@ -49,9 +59,8 @@ const mdlBarrel = loadModel('assets/models/barrel.glb');
 const mdlColumn = loadModel('assets/models/column.glb');
 const mdlChest = loadModel('assets/models/chest.glb');
 const mdlCharacter = loadModel('assets/models/character-human.glb');
-const mdlMixamo = loadModel('assets/models/character_small.glb');
-const mdlTest = loadModel('assets/models/test_skinned.glb');
-const animTest = loadModelAnimation('assets/models/test_skinned.glb');
+const mdlMixamo = loadModel('assets/models/character_walk.glb');
+const animWalk = loadModelAnimation('assets/models/character_walk.glb');
 const mdlLily = loadModel('assets/models/lily_large.glb');
 // Bloom collectible models (indexed by BI)
 const bloomModels = [mdlFlowerRed, mdlFlowerYellow, mdlFlowerPurple];
@@ -69,13 +78,50 @@ while (!windowShouldClose()) {
   if (isKeyDown(Key.S)) imz = 1.0;
   if (isKeyDown(Key.A)) imx = -1.0;
   if (isKeyDown(Key.D)) imx = 1.0;
+
+  // Touch input (virtual joystick + camera drag) — mobile only
+  let touchCamX = 0.0; let touchCamY = 0.0;
+  const tc = MOBILE ? getTouchCount() : 0.0;
+  if (tc > 0.0) {
+    const joyY = sh - TOUCH_JOY_Y_OFF;
+    for (let ti = 0.0; ti < tc; ti = ti + 1.0) {
+      const tx = getTouchX(ti);
+      const ty = getTouchY(ti);
+      // Left 40% = virtual joystick
+      if (tx < sw * 0.4) {
+        const dx = tx - TOUCH_JOY_X;
+        const dy = ty - joyY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 5.0) {
+          let clampDist = dist;
+          if (clampDist > TOUCH_JOY_RADIUS) clampDist = TOUCH_JOY_RADIUS;
+          imx = (dx / dist) * (clampDist / TOUCH_JOY_RADIUS);
+          imz = (dy / dist) * (clampDist / TOUCH_JOY_RADIUS);
+        }
+      }
+      // Right 60% = camera drag
+      else {
+        if (TCH[2] < 0.5) {
+          // First touch on right side — start tracking
+          TCH[0] = tx; TCH[1] = ty; TCH[2] = 1.0;
+        } else {
+          touchCamX = touchCamX + (tx - TCH[0]) * TOUCH_CAM_SENS;
+          touchCamY = touchCamY + (ty - TCH[1]) * TOUCH_CAM_SENS;
+          TCH[0] = tx; TCH[1] = ty;
+        }
+      }
+    }
+  } else {
+    TCH[2] = 0.0; // Reset camera tracking when no touches
+  }
+
   const iml = Math.sqrt(imx * imx + imz * imz);
   if (iml > 1.0) { imx = imx / iml; imz = imz / iml; }
 
-  // Camera rotation
+  // Camera rotation (keyboard + mouse + touch)
   const mdx = getMouseDeltaX() * -0.006;
   const mdy = getMouseDeltaY() * -0.004;
-  let camRot = mdx;
+  let camRot = mdx + touchCamX;
   if (isKeyDown(Key.LEFT) || isKeyDown(Key.Q)) camRot = camRot + 3.0 * dt;
   if (isKeyDown(Key.RIGHT) || isKeyDown(Key.E)) camRot = camRot - 3.0 * dt;
   const os = ST[1]; const oc = ST[2];
@@ -83,7 +129,7 @@ while (!windowShouldClose()) {
   ST[2] = oc - os * camRot;
   const mag = Math.sqrt(ST[1] * ST[1] + ST[2] * ST[2]);
   ST[1] = ST[1] / mag; ST[2] = ST[2] / mag;
-  ST[4] = ST[4] + mdy;
+  ST[4] = ST[4] + mdy + touchCamY;
   if (ST[4] < -1.0) ST[4] = -1.0;
   if (ST[4] > -0.1) ST[4] = -0.1;
   // Decay collect flash
@@ -268,6 +314,7 @@ while (!windowShouldClose()) {
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
     // === PLAYER — static textured ninja ===
+    updateModelAnimation(animWalk, 0.0, t);
     drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
@@ -338,6 +385,12 @@ while (!windowShouldClose()) {
     drawText(ht, sw - hw - 22.0, 16, 32, { r: 255, g: 255, b: 255, a: 255 });
     drawCircle(sw / 2.0, sh / 2.0, 2.0, { r: 255, g: 255, b: 255, a: 50 });
     drawText('FPS:' + Math.floor(getFPS()), 10, sh - 22.0, 14, { r: 255, g: 255, b: 255, a: 100 });
+    // Touch controls overlay (mobile only, toggleable via TCH[3])
+    if (TCH[3] > 0.5) {
+      const joyY = sh - TOUCH_JOY_Y_OFF;
+      drawCircle(TOUCH_JOY_X, joyY, TOUCH_JOY_RADIUS, { r: 255, g: 255, b: 255, a: 30 });
+      drawCircle(TOUCH_JOY_X + imx * TOUCH_JOY_RADIUS * 0.8, joyY + imz * TOUCH_JOY_RADIUS * 0.8, 22.0, { r: 255, g: 255, b: 255, a: 60 });
+    }
 
   // ==================== WIN ====================
   } else {
