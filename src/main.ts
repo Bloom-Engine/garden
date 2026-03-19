@@ -49,6 +49,7 @@ const mdlBarrel = loadModel('assets/models/barrel.glb');
 const mdlColumn = loadModel('assets/models/column.glb');
 const mdlChest = loadModel('assets/models/chest.glb');
 const mdlCharacter = loadModel('assets/models/character-human.glb');
+const mdlMixamo = loadModel('assets/models/character_small.glb');
 const mdlLily = loadModel('assets/models/lily_large.glb');
 // Bloom collectible models (indexed by BI)
 const bloomModels = [mdlFlowerRed, mdlFlowerYellow, mdlFlowerPurple];
@@ -264,23 +265,8 @@ while (!windowShouldClose()) {
     drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
-    // === PLAYER (character model) ===
-    // Player character — "Petal" (hardcoded Y to avoid NaN from P[1])
-    // Body
-    drawSphere(vec3(P[0], 0.55, P[2]), 0.55, { r: 255, g: 225, b: 210, a: 255 });
-    // Head
-    drawSphere(vec3(P[0], 1.3, P[2]), 0.42, { r: 255, g: 230, b: 215, a: 255 });
-    // Eyes
-    const ef = P[6]; const ec = P[7];
-    drawSphere(vec3(P[0]+ef*0.45+ec*0.18, py+1.62, P[2]+ec*0.45-ef*0.18), 0.09, { r: 30, g: 30, b: 40, a: 255 });
-    drawSphere(vec3(P[0]+ef*0.45-ec*0.18, py+1.62, P[2]+ec*0.45+ef*0.18), 0.09, { r: 30, g: 30, b: 40, a: 255 });
-    // Cheeks
-    drawSphere(vec3(P[0]+ef*0.38+ec*0.30, py+1.45, P[2]+ec*0.38-ef*0.30), 0.1, { r: 255, g: 180, b: 170, a: 130 });
-    drawSphere(vec3(P[0]+ef*0.38-ec*0.30, py+1.45, P[2]+ec*0.38+ef*0.30), 0.1, { r: 255, g: 180, b: 170, a: 130 });
-    // Feet
-    const fo = Math.sin(P[5] * 8.0) * 0.18;
-    drawSphere(vec3(P[0]+ef*fo+ec*0.2, py+0.1, P[2]+ec*fo-ef*0.2), 0.18, { r: 210, g: 180, b: 155, a: 255 });
-    drawSphere(vec3(P[0]-ef*fo-ec*0.2, py+0.1, P[2]-ec*fo+ef*0.2), 0.18, { r: 210, g: 180, b: 155, a: 255 });
+    // === PLAYER — textured Mixamo character ===
+    drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
