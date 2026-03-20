@@ -23,7 +23,7 @@ const TOUCH_CAM_SENS = 0.005;
 
 // === STATE (all arrays for Perry safety) ===
 // ST: [state, sinYaw, cosYaw, winTimer, pitch, collectFlash, moveSpeed]
-const ST = [0.0, 0.0, 1.0, 0.0, -0.35, 0.0, 0.0];
+const ST = [1.0, 0.0, 1.0, 0.0, -0.35, 0.0, 0.0]; // Start in game state (skip title)
 // P: [x, y, z, vy, grounded, walkT, faceSin, faceCos]
 const P = [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0];
 const V = [0.0, 0.0];
@@ -314,8 +314,8 @@ while (!windowShouldClose()) {
     drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
     // === PLAYER — static textured ninja ===
-    updateModelAnimation(animWalk, 1.0, t);  // index 1 = walk cycle
-    drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 0.0001, W);
+    updateModelAnimation(animWalk, 0.0, t, 1.0, P[0], 0.0, P[2]);  // walk cycle — verts in meters, scale=1
+    drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
