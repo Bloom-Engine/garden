@@ -237,38 +237,72 @@ while (!windowShouldClose()) {
     // === WORLD ===
     drawCube(vec3(0, -0.5, 0), 60.0, 1.0, 60.0, { r: 75, g: 155, b: 55, a: 255 });
     drawCube(vec3(0, -0.48, 0), 28.0, 1.0, 28.0, { r: 85, g: 165, b: 62, a: 255 });
-    // Ocean ring
     drawCube(vec3(0, -0.7, 0), 120.0, 0.5, 120.0, { r: 50, g: 130, b: 170, a: 200 });
-
-    // Grove (SE) — 6 trees
-    drawModel(mdlTreeOak, vec3(10, 0, 12), 2.0, W);
-    drawModel(mdlTreeDetail, vec3(13, 0, 10), 2.2, W);
-    drawModel(mdlTreeFat, vec3(8, 0, 15), 1.8, W);
-    drawModel(mdlTreeDefault, vec3(15, 0, 13), 2.0, W);
-    drawModel(mdlTreeOak, vec3(11, 0, 16), 1.6, W);
-    drawModel(mdlTreeDetail, vec3(14, 0, 15), 1.5, W);
-    // Scattered trees
-    drawModel(mdlTreeFat, vec3(-8, 0, -5), 1.8, W);
-    drawModel(mdlTreeDefault, vec3(5, 0, -15), 2.0, W);
-    drawModel(mdlTreeOak, vec3(-15, 0, 5), 1.5, W);
-    drawModel(mdlTreeDefault, vec3(20, 0, -5), 1.8, W);
-    drawModel(mdlTreeFat, vec3(-5, 0, 18), 1.4, W);
-    drawModel(mdlTreeOak, vec3(-18, 0, -15), 1.6, W);
-    // Rocks (NW)
-    drawModel(mdlRocks, vec3(-12, 0, -10), 2.0, W);
-    drawModel(mdlStones, vec3(-10, 0, -14), 2.5, W);
-    drawModel(mdlRocks, vec3(-15, 0, -12), 1.5, W);
-    drawModel(mdlStones, vec3(-14, 0, -8), 1.2, W);
-    drawModel(mdlRocks, vec3(-11, 0, -13), 1.8, W);
-    // Arch (NE)
-    drawModel(mdlColumn, vec3(10.5, 0, -12), 3.0, W);
-    drawModel(mdlColumn, vec3(13.5, 0, -12), 3.0, W);
     drawCylinder(vec3(12, 4.2, -12), 2.2, 2.2, 0.5, { r: 165, g: 160, b: 150, a: 255 });
-    // Pedestal + chest
     drawCylinder(vec3(0, 0, 0), 2.0, 2.3, 0.25, { r: 135, g: 130, b: 120, a: 255 });
     drawCylinder(vec3(0, 0.25, 0), 0.4, 0.55, 0.9, { r: 155, g: 150, b: 140, a: 255 });
     drawCylinder(vec3(0, 1.15, 0), 0.7, 0.7, 0.08, { r: 165, g: 160, b: 150, a: 255 });
+
+    // --- Models sorted by type to minimize texture state changes / draw calls ---
+    // Oak trees
+    drawModel(mdlTreeOak, vec3(10, 0, 12), 2.0, W);
+    drawModel(mdlTreeOak, vec3(11, 0, 16), 1.6, W);
+    drawModel(mdlTreeOak, vec3(-15, 0, 5), 1.5, W);
+    drawModel(mdlTreeOak, vec3(-18, 0, -15), 1.6, W);
+    // Detail trees
+    drawModel(mdlTreeDetail, vec3(13, 0, 10), 2.2, W);
+    drawModel(mdlTreeDetail, vec3(14, 0, 15), 1.5, W);
+    // Fat trees
+    drawModel(mdlTreeFat, vec3(8, 0, 15), 1.8, W);
+    drawModel(mdlTreeFat, vec3(-8, 0, -5), 1.8, W);
+    drawModel(mdlTreeFat, vec3(-5, 0, 18), 1.4, W);
+    // Default trees
+    drawModel(mdlTreeDefault, vec3(15, 0, 13), 2.0, W);
+    drawModel(mdlTreeDefault, vec3(5, 0, -15), 2.0, W);
+    drawModel(mdlTreeDefault, vec3(20, 0, -5), 1.8, W);
+    // Rocks
+    drawModel(mdlRocks, vec3(-12, 0, -10), 2.0, W);
+    drawModel(mdlRocks, vec3(-15, 0, -12), 1.5, W);
+    drawModel(mdlRocks, vec3(-11, 0, -13), 1.8, W);
+    drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
+    // Stones
+    drawModel(mdlStones, vec3(-10, 0, -14), 2.5, W);
+    drawModel(mdlStones, vec3(-14, 0, -8), 1.2, W);
+    drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
+    // Columns
+    drawModel(mdlColumn, vec3(10.5, 0, -12), 3.0, W);
+    drawModel(mdlColumn, vec3(13.5, 0, -12), 3.0, W);
+    // Chest
     drawModel(mdlChest, vec3(0, 1.2, 0), 1.2, W);
+    // Water lilies
+    const wy = 0.12 + Math.sin(t * 0.8) * 0.08;
+    drawCube(vec3(-10, wy, 10), 14.0, 0.08, 14.0, { r: 60, g: 150, b: 168, a: 165 });
+    drawModel(mdlLily, vec3(-8, wy + 0.02, 12), 2.0, W);
+    drawModel(mdlLily, vec3(-12, wy + 0.02, 8), 1.5, W);
+    drawModel(mdlLily, vec3(-6, wy + 0.02, 9), 1.2, W);
+    // Bushes
+    drawModel(mdlBush, vec3(3, 0, -2), 1.5, W);
+    drawModel(mdlBush, vec3(4, 0, 5), 1.0, W);
+    drawModel(mdlBush, vec3(18, 0, 5), 1.3, W);
+    drawModel(mdlBushLarge, vec3(-2, 0, 3), 1.2, W);
+    drawModel(mdlBushLarge, vec3(-6, 0, -3), 0.8, W);
+    drawModel(mdlBushLarge, vec3(-3, 0, -18), 1.0, W);
+    // Red flowers
+    drawModel(mdlFlowerRed, vec3(6, 0, 2), 1.5, W);
+    drawModel(mdlFlowerRed, vec3(-7, 0, 7), 1.2, W);
+    // Yellow flowers
+    drawModel(mdlFlowerYellow, vec3(-4, 0, -5), 1.5, W);
+    drawModel(mdlFlowerYellow, vec3(16, 0, 8), 1.0, W);
+    // Purple flowers
+    drawModel(mdlFlowerPurple, vec3(8, 0, -3), 1.5, W);
+    drawModel(mdlFlowerPurple, vec3(-18, 0, 3), 1.3, W);
+    // Mushrooms
+    drawModel(mdlMushroom, vec3(7, 0, 14), 1.5, W);
+    drawModel(mdlMushroom, vec3(-13, 0, -9), 2.0, W);
+    drawModel(mdlMushroom, vec3(12, 0, -6), 1.2, W);
+    // Barrels
+    drawModel(mdlBarrel, vec3(11, 0, -10), 1.5, W);
+    drawModel(mdlBarrel, vec3(14, 0, -10), 1.5, W);
     // Pedestal collected blooms
     for (let i = 0.0; i < 12.0; i = i + 1.0) {
       const j = Math.floor(i);
@@ -282,39 +316,9 @@ while (!windowShouldClose()) {
         drawSphere(vec3(sx, 0.35, sz), 0.06, { r: 120, g: 115, b: 110, a: 80 });
       }
     }
-    // Water (SW)
-    const wy = 0.12 + Math.sin(t * 0.8) * 0.08;
-    drawCube(vec3(-10, wy, 10), 14.0, 0.08, 14.0, { r: 60, g: 150, b: 168, a: 165 });
-    drawModel(mdlLily, vec3(-8, wy + 0.02, 12), 2.0, W);
-    drawModel(mdlLily, vec3(-12, wy + 0.02, 8), 1.5, W);
-    drawModel(mdlLily, vec3(-6, wy + 0.02, 9), 1.2, W);
-    // Bushes
-    drawModel(mdlBush, vec3(3, 0, -2), 1.5, W);
-    drawModel(mdlBushLarge, vec3(-2, 0, 3), 1.2, W);
-    drawModel(mdlBush, vec3(4, 0, 5), 1.0, W);
-    drawModel(mdlBushLarge, vec3(-6, 0, -3), 0.8, W);
-    drawModel(mdlBush, vec3(18, 0, 5), 1.3, W);
-    drawModel(mdlBushLarge, vec3(-3, 0, -18), 1.0, W);
-    // Ground flowers (decorative, not collectible)
-    drawModel(mdlFlowerRed, vec3(6, 0, 2), 1.5, W);
-    drawModel(mdlFlowerYellow, vec3(-4, 0, -5), 1.5, W);
-    drawModel(mdlFlowerPurple, vec3(8, 0, -3), 1.5, W);
-    drawModel(mdlFlowerRed, vec3(-7, 0, 7), 1.2, W);
-    drawModel(mdlFlowerYellow, vec3(16, 0, 8), 1.0, W);
-    drawModel(mdlFlowerPurple, vec3(-18, 0, 3), 1.3, W);
-    // Mushrooms
-    drawModel(mdlMushroom, vec3(7, 0, 14), 1.5, W);
-    drawModel(mdlMushroom, vec3(-13, 0, -9), 2.0, W);
-    drawModel(mdlMushroom, vec3(12, 0, -6), 1.2, W);
-    // Barrels
-    drawModel(mdlBarrel, vec3(11, 0, -10), 1.5, W);
-    drawModel(mdlBarrel, vec3(14, 0, -10), 1.5, W);
-    // Pond rocks
-    drawModel(mdlRocks, vec3(-4, 0, 4), 1.0, W);
-    drawModel(mdlStones, vec3(-16, 0, 16), 0.8, W);
 
     // === PLAYER — static textured ninja ===
-    updateModelAnimation(animWalk, 0.0, t, 1.0, P[0], 0.0, P[2]);  // walk cycle — verts in meters, scale=1
+    updateModelAnimation(animWalk, 0.0, t, 1.0, P[0], 0.0, P[2]);  // walk cycle (verts in meters)
     drawModel(mdlMixamo, vec3(P[0], 0.0, P[2]), 1.0, W);
 
     // === COLLECTIBLE BLOOMS ===
@@ -350,13 +354,18 @@ while (!windowShouldClose()) {
       }
     }
 
-    // === PARTICLES ===
+    // === PARTICLES (swap-remove for O(1) deletion) ===
     for (let i = PRL.length - 1.0; i >= 0.0; i = i - 1.0) {
       const j = Math.floor(i);
       PRL[j] = PRL[j] - dt;
       if (PRL[j] <= 0.0) {
-        PRX.splice(j, 1); PRY.splice(j, 1); PRZ.splice(j, 1);
-        PRVY.splice(j, 1); PRL.splice(j, 1); PRC.splice(j, 1);
+        const last = Math.floor(PRL.length - 1.0);
+        if (j < last) {
+          PRX[j] = PRX[last]; PRY[j] = PRY[last]; PRZ[j] = PRZ[last];
+          PRVY[j] = PRVY[last]; PRL[j] = PRL[last]; PRC[j] = PRC[last];
+        }
+        PRX.splice(last, 1); PRY.splice(last, 1); PRZ.splice(last, 1);
+        PRVY.splice(last, 1); PRL.splice(last, 1); PRC.splice(last, 1);
         continue;
       }
       PRVY[j] = PRVY[j] - 8.0 * dt;
