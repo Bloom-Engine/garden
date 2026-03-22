@@ -78,9 +78,14 @@ adb shell am start -n com.bloomengine.garden/.BloomActivity
 
 ### Windows
 ```bash
-# Must be run on Windows (or with MSVC cross-compilation sysroot via xwin)
+# Quick build + run:
+./build-windows.sh --run
+
+# Or manual steps:
 perry compile --target windows src/main.ts -o BloomGarden
-# Copy assets/ alongside the .exe
+mv BloomGarden BloomGarden.exe
+# Fix stack commit (Cranelift doesn't emit __chkstk probes; large functions crash without this):
+editbin /STACK:67108864,1048576 BloomGarden.exe
 ./BloomGarden.exe
 ```
 
